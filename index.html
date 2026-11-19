@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maybank (1155) stock tracker</title>
+  <link rel="stylesheet" href="dashboard/theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script>
+    // Data file for each dataset id that dashboard/page.html uses.
+    window.DASH_SOURCES = { maybank_monthly: 'data/maybank_monthly.csv' };
+  </script>
+  <script src="dashboard/dash-shim.js"></script>
+</head>
+<body>
+  <div id="dash-root"></div>
+  <script>
+    // Load the dashboard page, run its scripts in order, then load the data.
+    fetch('dashboard/page.html', { cache: 'no-store' })
+      .then((res) => {
+        if (!res.ok) throw new Error('dashboard/page.html: HTTP ' + res.status);
+        return res.text();
+      })
+      .then((html) => {
+        const tpl = document.createElement('template');
+        tpl.innerHTML = html;
+        const scripts = Array.from(tpl.content.querySelectorAll('script'));
+        scripts.forEach((s) => s.remove());
+        document.getElementById('dash-root').append(tpl.content);
+        scripts.forEach((s) => {
+          const run = document.createElement('script');
+          run.textContent = s.textContent;
+          document.body.append(run);
+        });
+        window.dashStart();
+      })
+      .catch((e) => {
+        document.getElementById('dash-root').textContent =
+          'Could not load the dashboard: ' + e.message + '. Open it through a web server. See README.md.';
+      });
+  </script>
+</body>
+</html>

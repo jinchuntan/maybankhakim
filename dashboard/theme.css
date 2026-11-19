@@ -1,0 +1,94 @@
+/* theme.css
+   Default colours, fonts and sizes for running dashboard/page.html outside Claude.
+   Inside Claude, the dashboard runtime gives these values. */
+
+:root {
+  --font-anthropic-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-anthropic-serif: Georgia, "Times New Roman", serif;
+
+  --color-fg: #1f1e1d;
+  --color-fg-muted: #6b6a68;
+  --color-bg: #faf9f5;
+  --color-panel: #ffffff;
+  --color-border-line: #e5e3dc;
+  --color-ok: #2e7d32;
+  --color-warn: #b26a00;
+  --color-bad: #c62828;
+
+  --series-1: #2f6fb3;
+  --series-2: #d9822b;
+  --series-3: #6a4fb3;
+  --series-4: #2e8b7a;
+
+  --cds-font-size-caption: 12px;
+  --cds-font-size-body: 15px;
+  --cds-font-size-heading: 18px;
+  --cds-font-size-title: 28px;
+  --cds-font-weight-medium: 600;
+
+  --cds-gap-xs: 4px;
+  --cds-gap-sm: 8px;
+  --cds-gap-md: 12px;
+  --cds-gap-lg: 20px;
+  --cds-gap-xl: 32px;
+  --cds-pad-xs: 4px;
+  --cds-pad-sm: 8px;
+  --cds-pad-md: 12px;
+  --cds-pad-lg: 16px;
+  --cds-pad-xl: 24px;
+  --cds-radius: 8px;
+
+  --cds-text-secondary: #6b6a68;
+  --cds-chart-grid: #eeece6;
+  --cds-chart-axis: #c9c6bd;
+  --cds-chart-reference: #8a8780;
+  --cds-surface-popover: #ffffff;
+  --cds-border: #d9d6cd;
+  --cds-shadow-popover: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-fg: #ecebe6;
+    --color-fg-muted: #a3a19a;
+    --color-bg: #1c1b1a;
+    --color-panel: #262523;
+    --color-border-line: #3a3936;
+    --color-ok: #66bb6a;
+    --color-warn: #ffb74d;
+    --color-bad: #ef5350;
+
+    --series-1: #6fa8e8;
+    --series-2: #f0a35e;
+    --series-3: #a58be6;
+    --series-4: #5cc2ad;
+
+    --cds-text-secondary: #a3a19a;
+    --cds-chart-grid: #302f2c;
+    --cds-chart-axis: #4a4945;
+    --cds-chart-reference: #8f8c85;
+    --cds-surface-popover: #2c2b29;
+    --cds-border: #45443f;
+    --cds-shadow-popover: 0 4px 16px rgba(0, 0, 0, 0.5);
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-anthropic-sans);
+  font-size: var(--cds-font-size-body);
+}
+
+#dash-root {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--cds-gap-xl) var(--cds-gap-lg);
+}
+
+.dash-skeleton {
+  color: transparent;
+  background: var(--color-border-line);
+  border-radius: 4px;
+}

@@ -1,0 +1,500 @@
+<meta name="dash-one-writer">
+<style>
+.mb { font-family: var(--font-anthropic-sans); color: var(--color-fg); display: flex; flex-direction: column; gap: var(--cds-gap-lg); }
+.mb h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 var(--cds-gap-sm); }
+.mb h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0 0 var(--cds-gap-sm); }
+.mb p { margin: 0 0 var(--cds-gap-sm); line-height: 1.5; }
+.mb p:last-child { margin-bottom: 0; }
+.mb-muted { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.mb-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); }
+.mb-signal { border-left-width: 6px; }
+.mb-signal.is-buy { border-left-color: var(--color-ok); }
+.mb-signal.is-hold, .mb-signal.is-wait { border-left-color: var(--color-warn); }
+.mb-signal.is-sell { border-left-color: var(--color-bad); }
+.mb-eyebrow { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); text-transform: uppercase; letter-spacing: 0.04em; }
+.mb-signal-label { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 2rem; line-height: 1.2; margin: var(--cds-gap-xs) 0 var(--cds-gap-md); }
+.mb-signal.is-buy .mb-signal-label { color: var(--color-ok); }
+.mb-signal.is-hold .mb-signal-label, .mb-signal.is-wait .mb-signal-label { color: var(--color-warn); }
+.mb-signal.is-sell .mb-signal-label { color: var(--color-bad); }
+.mb-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--cds-gap-md); }
+.mb-tile-label { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin-bottom: var(--cds-gap-xs); }
+.mb-num { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 1.6rem; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.mb-sub { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin-top: var(--cds-gap-xs); font-variant-numeric: tabular-nums; }
+.mb-up { color: var(--color-ok); }
+.mb-down { color: var(--color-bad); }
+.mb-chart { position: relative; min-height: 300px; }
+.mb-chart-rsi { min-height: 170px; }
+.mb-chart svg { display: block; overflow: visible; }
+.mb-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; z-index: 2; font-variant-numeric: tabular-nums; }
+.mb-tip-head { font-weight: var(--cds-font-weight-medium); }
+.mb-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--cds-text-secondary); margin-bottom: var(--cds-gap-sm); }
+.mb-sw { display: inline-block; width: 16px; height: 0; border-top: 2px solid currentColor; vertical-align: middle; margin-right: 6px; }
+.mb-sw-dash { border-top-style: dashed; }
+.mb-tri { display: inline-block; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; vertical-align: middle; margin-right: 6px; }
+.mb-tri-up { border-bottom: 10px solid var(--color-ok); }
+.mb-tri-down { border-top: 10px solid var(--color-bad); }
+.mb-chart text { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); font-family: var(--font-anthropic-sans); }
+.mb-chart .tick line, .mb-chart .domain { stroke: var(--cds-chart-axis); }
+.mb-grid line { stroke: var(--cds-chart-grid); }
+.mb-ref { stroke: var(--cds-chart-reference); stroke-dasharray: 4 3; }
+.mb-zone { margin: 0 0 var(--cds-gap-sm); }
+.mb-zone b { font-weight: var(--cds-font-weight-medium); }
+.mb details summary { cursor: pointer; font-weight: var(--cds-font-weight-medium); }
+.mb-table-wrap { overflow-x: auto; margin-top: var(--cds-gap-sm); }
+.mb table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: var(--cds-font-size-caption); }
+.mb th, .mb td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.mb th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); }
+.mb th:first-child, .mb td:first-child, .mb th:last-child, .mb td:last-child { text-align: left; }
+</style>
+
+<div class="mb" data-read lang="en">
+
+  <header id="top">
+    <h1>Maybank (1155) monthly stock tracker</h1>
+    <p>In <span data-draw="month_name" data-source="latest" data-field="date" data-row="0">—</span>, Maybank closed at RM<b data-draw="close" data-source="latest" data-field="close" data-row="0">—</b>. This is <b data-draw="gap" data-source="latest" data-field="gap_pct" data-row="0">—</b>% <span data-draw="dir" data-source="latest" data-field="trend" data-row="0">—</span> its 10-month average. The rule signal is <b data-draw="signal" data-source="latest" data-field="signal" data-row="0">—</b>.</p>
+    <p class="mb-muted">The signal comes from two fixed rules on past monthly prices. It is not financial advice. You make the final buy or sell decision.</p>
+  </header>
+
+  <section id="signal" class="mb-card mb-signal">
+    <div class="mb-eyebrow">Rule signal for <span data-draw="month_name" data-source="latest" data-field="date" data-row="0">—</span></div>
+    <div class="mb-signal-label" data-draw="signal" data-source="latest" data-field="signal" data-row="0">—</div>
+    <p data-when-signal="buy" hidden>The close is above the 10-month average and the RSI is not above 70. The trend is up. The rule says you can buy or keep holding.</p>
+    <p data-when-signal="hold" hidden>The close is above the 10-month average, but the RSI is above 70. The price rose fast. The rule says keep holding, but do not buy more now.</p>
+    <p data-when-signal="wait" hidden>The close is below the 10-month average, but the RSI is below 30. The price fell fast and a rebound can come. The rule says do not sell in panic. Wait for a monthly close above the average before you buy.</p>
+    <p data-when-signal="sell" hidden>The close is below the 10-month average and the RSI is not below 30. The trend is down. The rule says do not buy now. If you hold, think about selling or setting a stop-loss.</p>
+    <p data-when-signal="none" hidden>The file has fewer than 10 months, so the rule cannot give a signal yet.</p>
+    <p>Trend rule: the close of RM<b data-draw="close" data-source="latest" data-field="close" data-row="0">—</b> is <b data-draw="gap" data-source="latest" data-field="gap_pct" data-row="0">—</b>% <span data-draw="dir" data-source="latest" data-field="trend" data-row="0">—</span> the 10-month average of RM<b data-draw="ma10" data-source="latest" data-field="ma10" data-row="0">—</b>.</p>
+    <p>Momentum rule: the RSI (14 months) is <b data-draw="rsi" data-source="latest" data-field="rsi14" data-row="0">—</b>. <span data-when-rsi="over" hidden>This is above 70 (overbought).</span><span data-when-rsi="under" hidden>This is below 30 (oversold).</span><span data-when-rsi="mid" hidden>This is between 30 and 70 (neutral).</span></p>
+    <p data-when-cross="down" hidden>Last trend change: the close crossed below the 10-month average in <span data-draw="lc_month" data-source="latest" data-field="last_cross_date" data-row="0">—</span>. That month gave a sell signal.</p>
+    <p data-when-cross="up" hidden>Last trend change: the close crossed above the 10-month average in <span data-draw="lc_month" data-source="latest" data-field="last_cross_date" data-row="0">—</span>. That month gave a buy signal.</p>
+    <p data-when-cross="none" hidden>The close has not crossed the 10-month average in this file.</p>
+    <p class="mb-muted">Read the signal at the end of the month. During the month, the last row of the file changes every day.</p>
+  </section>
+
+  <section id="tiles" class="mb-tiles">
+    <div class="mb-card">
+      <div class="mb-tile-label">Latest close</div>
+      <div class="mb-num">RM<span class="dash-skeleton" data-draw="close" data-source="latest" data-field="close" data-row="0">—</span></div>
+      <div class="mb-sub"><span data-draw="change" data-source="latest" data-field="change_pct" data-row="0">—</span>% in <span data-draw="month_name" data-source="latest" data-field="date" data-row="0">—</span></div>
+    </div>
+    <div class="mb-card">
+      <div class="mb-tile-label">10-month average</div>
+      <div class="mb-num">RM<span class="dash-skeleton" data-draw="ma10" data-source="latest" data-field="ma10" data-row="0">—</span></div>
+      <div class="mb-sub">Trend line for the signal</div>
+    </div>
+    <div class="mb-card">
+      <div class="mb-tile-label">3-month average</div>
+      <div class="mb-num">RM<span class="dash-skeleton" data-draw="ma3" data-source="latest" data-field="ma3" data-row="0">—</span></div>
+      <div class="mb-sub">Short-term direction</div>
+    </div>
+    <div class="mb-card">
+      <div class="mb-tile-label">RSI (14 months)</div>
+      <div class="mb-num"><span class="dash-skeleton" data-draw="rsi" data-source="latest" data-field="rsi14" data-row="0">—</span></div>
+      <div class="mb-sub">Below 30 oversold, above 70 overbought</div>
+    </div>
+    <div class="mb-card">
+      <div class="mb-tile-label">Price range in this file</div>
+      <div class="mb-num">RM<span class="dash-skeleton" data-draw="low" data-source="latest" data-field="low_all" data-row="0">—</span> to <span class="dash-skeleton" data-draw="high" data-source="latest" data-field="high_all" data-row="0">—</span></div>
+      <div class="mb-sub">Lowest low and highest high</div>
+    </div>
+  </section>
+
+  <section id="price" class="mb-card">
+    <h2>Monthly close and moving averages</h2>
+    <div class="mb-legend">
+      <span><span class="mb-sw" data-swatch="0"></span>Monthly close</span>
+      <span><span class="mb-sw mb-sw-dash" data-swatch="1"></span>3-month average</span>
+      <span><span class="mb-sw" data-swatch="2"></span>10-month average</span>
+      <span><span class="mb-tri mb-tri-up"></span>Buy signal (close crosses above the 10-month average)</span>
+      <span><span class="mb-tri mb-tri-down"></span>Sell signal (close crosses below the 10-month average)</span>
+    </div>
+    <div class="mb-chart" data-draw="price_chart" data-source="indicators"></div>
+  </section>
+
+  <section id="rsi" class="mb-card">
+    <h2>RSI (14 months)</h2>
+    <p class="mb-muted">The dashed lines are at 70 (overbought) and 30 (oversold). The RSI starts after the first 14 months of the file.</p>
+    <div class="mb-chart mb-chart-rsi" data-draw="rsi_chart" data-source="indicators"></div>
+  </section>
+
+  <section id="rules" class="mb-card">
+    <h2>How the signal works</h2>
+    <p>The dashboard uses two fixed rules on the monthly close.</p>
+    <p>The trend rule uses the 10-month average. This is the mean of the last 10 monthly closes. When the close is above this average, the trend is up. When the close is below it, the trend is down. A buy signal is the month when the close crosses from below to above the average. A sell signal is the month when the close crosses from above to below the average.</p>
+    <p>The momentum rule uses the RSI (Relative Strength Index) over 14 months. It compares the size of the up months with the size of the down months. It goes from 0 to 100. Above 70 means the price rose fast. Below 30 means the price fell fast.</p>
+    <p class="mb-zone"><b>Buy / hold zone.</b> The close is above the 10-month average and the RSI is 70 or lower.</p>
+    <p class="mb-zone"><b>Hold, do not add.</b> The close is above the 10-month average and the RSI is above 70.</p>
+    <p class="mb-zone"><b>Wait, oversold.</b> The close is below the 10-month average and the RSI is below 30.</p>
+    <p class="mb-zone"><b>Sell / avoid zone.</b> The close is below the 10-month average and the RSI is 30 or higher.</p>
+    <p class="mb-muted">Limits. The rules use past prices only. They do not use news, earnings or dividends. A crossing can switch back in the next month, so a signal can be wrong. The prices are not adjusted for dividends.</p>
+  </section>
+
+  <section id="data">
+    <details>
+      <summary>Monthly data and signals</summary>
+      <div class="mb-table-wrap">
+        <table data-source="indicators" data-row-key="date">
+          <thead>
+            <tr>
+              <th data-field="date">Month</th>
+              <th data-field="close">Close (RM)</th>
+              <th data-field="ma3">3-month avg</th>
+              <th data-field="ma10">10-month avg</th>
+              <th data-field="rsi14">RSI (14)</th>
+              <th data-field="trend">Close vs 10-month avg</th>
+              <th data-field="cross">Signal</th>
+            </tr>
+          </thead>
+          <tbody data-draw="table_body"></tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <p class="mb-muted" id="source-note">Data: the Investing.com monthly price history that you attached. It has <span data-draw="months" data-source="latest" data-field="months" data-row="0">—</span> months, from <span data-draw="first_month" data-source="latest" data-field="first_date" data-row="0">—</span> to <span data-draw="month_name" data-source="latest" data-field="date" data-row="0">—</span>. The last month is not complete until the month ends.</p>
+
+</div>
+
+<script>
+dash.loader('maybank_monthly', {
+  description: 'Reads the Investing.com CSV export. Changes the date MM/DD/YYYY to YYYY-MM-DD. Changes text to numbers (Vol. "167.63M" becomes 167630000, "-0.90%" becomes -0.9). Sorts the rows from oldest to newest.',
+  fn: ({ answer }) => {
+    const text = String(answer).replace(/^﻿/, '');
+    const parseLine = (line) => {
+      const out = []; let cur = ''; let q = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (q) {
+          if (ch === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else { q = false; } }
+          else { cur += ch; }
+        } else if (ch === '"') { q = true; }
+        else if (ch === ',') { out.push(cur); cur = ''; }
+        else { cur += ch; }
+      }
+      out.push(cur);
+      return out;
+    };
+    const lines = text.split(/\r?\n/).filter((l) => l.trim() !== '');
+    const head = parseLine(lines[0]).map((h) => h.trim());
+    const need = ['Date', 'Price', 'Open', 'High', 'Low', 'Vol.', 'Change %'];
+    const missing = need.filter((n) => head.indexOf(n) < 0);
+    if (missing.length) throw new Error('The file has no column: ' + missing.join(', '));
+    const col = (cells, name) => cells[head.indexOf(name)];
+    const num = (s) => {
+      const t = String(s == null ? '' : s).replace(/,/g, '').trim();
+      const m = t.match(/^(-?[0-9.]+)\s*([KMB])?%?$/i);
+      if (!m) return null;
+      const mult = { K: 1e3, M: 1e6, B: 1e9 }[(m[2] || '').toUpperCase()] || 1;
+      return mult === 1 ? Number(m[1]) : Math.round(Number(m[1]) * mult);
+    };
+    const rows = lines.slice(1).map(parseLine).map((c) => {
+      const [mm, dd, yyyy] = col(c, 'Date').split('/');
+      return {
+        date: `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`,
+        close: num(col(c, 'Price')),
+        open: num(col(c, 'Open')),
+        high: num(col(c, 'High')),
+        low: num(col(c, 'Low')),
+        volume: num(col(c, 'Vol.')),
+        change_pct: num(col(c, 'Change %')),
+      };
+    });
+    rows.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+    return { columns: ['date', 'close', 'open', 'high', 'low', 'volume', 'change_pct'], rows };
+  },
+});
+
+dash.calc('indicators', {
+  title: 'Moving averages, RSI and buy/sell signals',
+  description: 'For each month: the 3-month and 10-month simple averages of the close, the 14-month RSI (Wilder method), whether the close is above or below the 10-month average, and the month the close crossed it (up = buy signal, down = sell signal).',
+  inputs: ['maybank_monthly'],
+  fn: (prices) => {
+    const SHORT = 3; const LONG = 10; const RSI_N = 14;
+    const c = prices.map((r) => r.close);
+    const round = (x, d) => (x == null ? null : Math.round(x * 10 ** d) / 10 ** d);
+    const sma = (n, i) => (i >= n - 1 ? c.slice(i - n + 1, i + 1).reduce((a, b) => a + b, 0) / n : null);
+    const rsi = new Array(c.length).fill(null);
+    if (c.length > RSI_N) {
+      let g = 0; let l = 0;
+      for (let i = 1; i <= RSI_N; i++) { const d = c[i] - c[i - 1]; if (d > 0) g += d; else l -= d; }
+      g /= RSI_N; l /= RSI_N;
+      rsi[RSI_N] = l === 0 ? 100 : 100 - 100 / (1 + g / l);
+      for (let i = RSI_N + 1; i < c.length; i++) {
+        const d = c[i] - c[i - 1];
+        g = (g * (RSI_N - 1) + Math.max(d, 0)) / RSI_N;
+        l = (l * (RSI_N - 1) + Math.max(-d, 0)) / RSI_N;
+        rsi[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l);
+      }
+    }
+    let prev = null;
+    return prices.map((r, i) => {
+      const maLong = sma(LONG, i);
+      const above = maLong == null ? null : r.close > maLong;
+      const cross = prev != null && above != null && above !== prev ? (above ? 'up' : 'down') : '';
+      if (above != null) prev = above;
+      return {
+        date: r.date,
+        close: r.close,
+        ma3: round(sma(SHORT, i), 2),
+        ma10: round(maLong, 2),
+        rsi14: round(rsi[i], 1),
+        trend: above == null ? '' : above ? 'above' : 'below',
+        cross,
+      };
+    });
+  },
+});
+
+dash.calc('latest', {
+  title: 'Latest month and rule signal',
+  description: 'The newest month, its gap to the 10-month average, the price range in the file, the last buy or sell signal, and the zone from the two rules: above the average with RSI 70 or lower = buy / hold; above with RSI over 70 = hold, do not add; below with RSI under 30 = wait; below with RSI 30 or higher = sell / avoid.',
+  inputs: ['indicators', 'maybank_monthly'],
+  fn: (indicators, prices) => {
+    if (!indicators.length) return [];
+    const last = indicators[indicators.length - 1];
+    const p = prices[prices.length - 1];
+    const crosses = indicators.filter((r) => r.cross);
+    const lc = crosses[crosses.length - 1];
+    const rsi = last.rsi14;
+    const rsiCode = rsi == null ? 'none' : rsi > 70 ? 'over' : rsi < 30 ? 'under' : 'mid';
+    let code = 'none';
+    if (last.trend === 'above') code = rsiCode === 'over' ? 'hold' : 'buy';
+    else if (last.trend === 'below') code = rsiCode === 'under' ? 'wait' : 'sell';
+    const labels = { buy: 'Buy / hold zone', hold: 'Hold, do not add', wait: 'Wait, oversold', sell: 'Sell / avoid zone', none: 'Not enough data' };
+    return [{
+      date: last.date,
+      close: last.close,
+      change_pct: p.change_pct,
+      ma3: last.ma3,
+      ma10: last.ma10,
+      rsi14: rsi,
+      trend: last.trend,
+      gap_pct: last.ma10 == null ? null : Math.round((Math.abs(last.close - last.ma10) / last.ma10) * 1000) / 10,
+      signal: labels[code],
+      signal_code: code,
+      rsi_code: rsiCode,
+      last_cross: lc ? lc.cross : 'none',
+      last_cross_date: lc ? lc.date : '',
+      low_all: Math.min(...prices.map((r) => r.low)),
+      high_all: Math.max(...prices.map((r) => r.high)),
+      first_date: prices[0].date,
+      months: prices.length,
+    }];
+  },
+});
+</script>
+
+<script>
+(function () {
+  const parseDate = d3.utcParse('%Y-%m-%d');
+  const fmtMonth = d3.utcFormat('%b %Y');
+  const fmtTick = d3.utcFormat("%b '%y");
+
+  document.querySelectorAll('[data-swatch]').forEach((el) => { el.style.color = dash.colors[Number(el.getAttribute('data-swatch'))]; });
+
+  function latestRow() {
+    const d = dash.data('latest');
+    return { d, row: d.status === 'ok' && Array.isArray(d.data) && d.data.length ? d.data[0] : null };
+  }
+
+  function text(name, fmt) {
+    dash.draw(name, (el) => {
+      const { d, row } = latestRow();
+      el.classList.toggle('dash-skeleton', d.status === 'loading');
+      const v = row ? fmt(row, el) : null;
+      el.textContent = v == null ? '—' : v;
+    });
+  }
+
+  text('month_name', (r) => fmtMonth(parseDate(r.date)));
+  text('first_month', (r) => fmtMonth(parseDate(r.first_date)));
+  text('close', (r) => r.close.toFixed(2));
+  text('gap', (r) => (r.gap_pct == null ? null : r.gap_pct.toFixed(1)));
+  text('dir', (r) => (r.trend === 'above' ? 'above' : r.trend === 'below' ? 'below' : null));
+  text('signal', (r) => r.signal);
+  text('ma10', (r) => (r.ma10 == null ? null : r.ma10.toFixed(2)));
+  text('ma3', (r) => (r.ma3 == null ? null : r.ma3.toFixed(2)));
+  text('rsi', (r) => (r.rsi14 == null ? null : r.rsi14.toFixed(1)));
+  text('low', (r) => r.low_all.toFixed(2));
+  text('high', (r) => r.high_all.toFixed(2));
+  text('months', (r) => String(r.months));
+  text('lc_month', (r) => (r.last_cross_date ? fmtMonth(parseDate(r.last_cross_date)) : null));
+  text('change', (r, el) => {
+    if (r.change_pct == null) return null;
+    el.classList.toggle('mb-up', r.change_pct > 0);
+    el.classList.toggle('mb-down', r.change_pct < 0);
+    return (r.change_pct > 0 ? '+' : '') + r.change_pct.toFixed(2);
+  });
+
+  dash.onData(() => {
+    const { row } = latestRow();
+    const sig = row ? row.signal_code : '';
+    const rsi = row ? row.rsi_code : '';
+    const cross = row ? row.last_cross : '';
+    document.querySelectorAll('[data-when-signal]').forEach((el) => { el.hidden = el.getAttribute('data-when-signal') !== sig; });
+    document.querySelectorAll('[data-when-rsi]').forEach((el) => { el.hidden = el.getAttribute('data-when-rsi') !== rsi; });
+    document.querySelectorAll('[data-when-cross]').forEach((el) => { el.hidden = el.getAttribute('data-when-cross') !== cross; });
+    document.querySelectorAll('.mb-signal').forEach((el) => {
+      ['is-buy', 'is-hold', 'is-wait', 'is-sell'].forEach((c) => el.classList.remove(c));
+      if (sig && sig !== 'none') el.classList.add('is-' + sig);
+    });
+  });
+
+  function placeholder(el, d) {
+    const p = document.createElement('p');
+    p.className = 'mb-muted';
+    p.textContent = d.status === 'error' ? 'Failed to load' : '—';
+    el.replaceChildren(p);
+  }
+
+  function leftMargin(svg, labels) {
+    const probe = svg.append('g');
+    let w = 0;
+    labels.forEach((t) => { const n = probe.append('text').text(t).node(); w = Math.max(w, n.getComputedTextLength()); });
+    probe.remove();
+    return Math.max(48, Math.ceil(w) + 12);
+  }
+
+  function addTooltip(el, svg, rows, x, m, W, H, linesFor) {
+    const tip = document.createElement('div');
+    tip.className = 'mb-tip';
+    tip.hidden = true;
+    el.append(tip);
+    const rule = svg.append('line').attr('class', 'mb-ref').attr('y1', m.top).attr('y2', H - m.bottom).style('display', 'none');
+    const bis = d3.bisector((r) => r.t).center;
+    svg.append('rect')
+      .attr('x', m.left).attr('y', m.top)
+      .attr('width', Math.max(0, W - m.left - m.right)).attr('height', Math.max(0, H - m.top - m.bottom))
+      .style('fill', 'transparent')
+      .on('pointermove', (ev) => {
+        const [px] = d3.pointer(ev);
+        const r = rows[bis(rows, x.invert(px))];
+        if (!r) return;
+        rule.attr('x1', x(r.t)).attr('x2', x(r.t)).style('display', null);
+        const lines = linesFor(r);
+        tip.replaceChildren(...lines.map((t, i) => { const dv = document.createElement('div'); dv.textContent = t; if (i === 0) dv.className = 'mb-tip-head'; return dv; }));
+        tip.hidden = false;
+        const scale = el.clientWidth / W || 1;
+        const tw = tip.offsetWidth;
+        const cx = x(r.t) * scale;
+        let left = cx + 12;
+        if (left + tw > el.clientWidth) left = cx - tw - 12;
+        tip.style.left = Math.max(0, left) + 'px';
+        tip.style.top = m.top * scale + 'px';
+      })
+      .on('pointerleave', () => { tip.hidden = true; rule.style('display', 'none'); });
+  }
+
+  const money = (v) => (v == null ? 'n/a' : 'RM' + v.toFixed(2));
+
+  dash.draw('price_chart', (el) => {
+    const d = dash.data('indicators');
+    if (d.status !== 'ok' || !Array.isArray(d.data) || !d.data.length) { placeholder(el, d); return; }
+    const rows = d.data.map((r) => Object.assign({}, r, { t: parseDate(r.date) }));
+    const W = Math.max(280, el.clientWidth || 600);
+    const H = 300;
+    el.replaceChildren();
+    const svg = d3.select(el).append('svg')
+      .attr('viewBox', `0 0 ${W} ${H}`).attr('width', '100%')
+      .attr('role', 'img')
+      .attr('aria-label', 'Line chart of the Maybank monthly close with its 3-month and 10-month averages. Up triangles mark buy signals and down triangles mark sell signals.');
+    const vals = rows.flatMap((r) => [r.close, r.ma3, r.ma10]).filter((v) => v != null);
+    const y = d3.scaleLinear().domain(d3.extent(vals)).nice();
+    const yTicks = y.ticks(5);
+    const m = { top: 16, right: 16, bottom: 28, left: leftMargin(svg, yTicks.map((v) => v.toFixed(2))) };
+    y.range([H - m.bottom, m.top]);
+    const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.t)).range([m.left, W - m.right]);
+
+    svg.append('g').attr('class', 'mb-grid').selectAll('line').data(yTicks).join('line')
+      .attr('x1', m.left).attr('x2', W - m.right).attr('y1', (v) => y(v)).attr('y2', (v) => y(v));
+    const nx = Math.max(2, Math.min(8, Math.floor((W - m.left - m.right) / 72)));
+    svg.append('g').attr('transform', `translate(0,${H - m.bottom})`)
+      .call(d3.axisBottom(x).ticks(nx).tickFormat(fmtTick).tickSizeOuter(0));
+    svg.append('g').attr('transform', `translate(${m.left},0)`)
+      .call(d3.axisLeft(y).tickValues(yTicks).tickFormat((v) => v.toFixed(2)).tickSizeOuter(0))
+      .call((g) => g.select('.domain').remove());
+
+    const series = [
+      { key: 'close', color: dash.colors[0], width: 2, dash: null },
+      { key: 'ma3', color: dash.colors[1], width: 1.5, dash: '5 4' },
+      { key: 'ma10', color: dash.colors[2], width: 2, dash: null },
+    ];
+    series.forEach((s) => {
+      const line = d3.line().defined((r) => r[s.key] != null).x((r) => x(r.t)).y((r) => y(r[s.key]));
+      svg.append('path').datum(rows).attr('fill', 'none')
+        .style('stroke', s.color).style('stroke-width', s.width).style('stroke-dasharray', s.dash)
+        .attr('d', line);
+    });
+    svg.append('g').selectAll('circle').data(rows).join('circle')
+      .attr('cx', (r) => x(r.t)).attr('cy', (r) => y(r.close)).attr('r', 2.5)
+      .style('fill', dash.colors[0]);
+
+    const sym = d3.symbol().type(d3.symbolTriangle).size(90);
+    svg.append('g').selectAll('path').data(rows.filter((r) => r.cross)).join('path')
+      .attr('d', sym)
+      .attr('transform', (r) => (r.cross === 'up'
+        ? `translate(${x(r.t)},${y(r.close) + 14})`
+        : `translate(${x(r.t)},${y(r.close) - 14}) rotate(180)`))
+      .style('fill', (r) => (r.cross === 'up' ? 'var(--color-ok)' : 'var(--color-bad)'));
+
+    addTooltip(el, svg, rows, x, m, W, H, (r) => {
+      const out = [fmtMonth(r.t), `Close ${money(r.close)}`, `3-month average ${money(r.ma3)}`, `10-month average ${money(r.ma10)}`, `RSI (14) ${r.rsi14 == null ? 'n/a' : r.rsi14.toFixed(1)}`];
+      if (r.cross === 'up') out.push('Buy signal: close crossed above the 10-month average');
+      if (r.cross === 'down') out.push('Sell signal: close crossed below the 10-month average');
+      return out;
+    });
+  });
+
+  dash.draw('rsi_chart', (el) => {
+    const d = dash.data('indicators');
+    if (d.status !== 'ok' || !Array.isArray(d.data) || !d.data.length) { placeholder(el, d); return; }
+    const rows = d.data.map((r) => Object.assign({}, r, { t: parseDate(r.date) }));
+    const W = Math.max(280, el.clientWidth || 600);
+    const H = 170;
+    el.replaceChildren();
+    const svg = d3.select(el).append('svg')
+      .attr('viewBox', `0 0 ${W} ${H}`).attr('width', '100%')
+      .attr('role', 'img')
+      .attr('aria-label', 'Line chart of the 14-month RSI of Maybank, with reference lines at 30 and 70.');
+    const yTicks = [0, 30, 70, 100];
+    const m = { top: 10, right: 16, bottom: 28, left: leftMargin(svg, ['12.00', '100']) };
+    const y = d3.scaleLinear().domain([0, 100]).range([H - m.bottom, m.top]);
+    const x = d3.scaleUtc().domain(d3.extent(rows, (r) => r.t)).range([m.left, W - m.right]);
+    const nx = Math.max(2, Math.min(8, Math.floor((W - m.left - m.right) / 72)));
+    svg.append('g').attr('transform', `translate(0,${H - m.bottom})`)
+      .call(d3.axisBottom(x).ticks(nx).tickFormat(fmtTick).tickSizeOuter(0));
+    svg.append('g').attr('transform', `translate(${m.left},0)`)
+      .call(d3.axisLeft(y).tickValues(yTicks).tickSizeOuter(0))
+      .call((g) => g.select('.domain').remove());
+    [30, 70].forEach((v) => {
+      svg.append('line').attr('class', 'mb-ref').attr('x1', m.left).attr('x2', W - m.right).attr('y1', y(v)).attr('y2', y(v));
+    });
+    const line = d3.line().defined((r) => r.rsi14 != null).x((r) => x(r.t)).y((r) => y(r.rsi14));
+    svg.append('path').datum(rows).attr('fill', 'none').style('stroke', dash.colors[0]).style('stroke-width', 2).attr('d', line);
+    svg.append('g').selectAll('circle').data(rows.filter((r) => r.rsi14 != null)).join('circle')
+      .attr('cx', (r) => x(r.t)).attr('cy', (r) => y(r.rsi14)).attr('r', 2.5).style('fill', dash.colors[0]);
+    addTooltip(el, svg, rows, x, m, W, H, (r) => [fmtMonth(r.t), `RSI (14) ${r.rsi14 == null ? 'n/a (fewer than 15 months)' : r.rsi14.toFixed(1)}`]);
+  });
+
+  dash.draw('table_body', (tb) => {
+    const d = dash.data('indicators');
+    if (d.status !== 'ok' || !Array.isArray(d.data)) { tb.replaceChildren(); return; }
+    const f2 = (v) => (v == null ? '' : v.toFixed(2));
+    tb.replaceChildren(...d.data.slice().reverse().map((r) => {
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-key', r.date);
+      const cells = [
+        fmtMonth(parseDate(r.date)),
+        f2(r.close),
+        f2(r.ma3),
+        f2(r.ma10),
+        r.rsi14 == null ? '' : r.rsi14.toFixed(1),
+        r.trend === 'above' ? 'Above' : r.trend === 'below' ? 'Below' : '',
+        r.cross === 'up' ? 'Buy signal' : r.cross === 'down' ? 'Sell signal' : '',
+      ];
+      cells.forEach((t) => { const td = document.createElement('td'); td.textContent = t; tr.append(td); });
+      return tr;
+    }));
+  });
+})();
+</script>
